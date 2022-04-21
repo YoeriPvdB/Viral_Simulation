@@ -4,8 +4,10 @@ boolean newWave = false;
 float radXPos, radYPos;
 float radiusX = 100, radiusY =100;
 float infectRadius = 0;
-float infectChance = 100;
+float infectChance = 250;
 int clickChances = 3;
+
+int virusDamage = int(random(5, 10));
 void setup() {
   
   
@@ -16,6 +18,7 @@ void setup() {
   for(int i = 0; i < nodes.length; i++) {
   
     nodes[i] = new Node();
+    nodes[i].Initialise();
     nodes[i].Update();
   }
   
@@ -27,8 +30,11 @@ void draw() {
   background(0);
   
   for(Node node : nodes) {
-    node.Display();
+    if(node.alive) {
+      node.Display();
     node.Count();
+    }
+    
   }
   
   if(mousePressed && clickChances > 0) {
@@ -54,14 +60,14 @@ void Radius() {
     
      radiusX+=10;
     radiusY+=10;
-    infectChance -= 4;
+    infectChance -= 10;
     if(radiusY >= 350) {
         
         newWave = false;
         radiusY = 100;
         radiusX = 100;
         infectRadius = 0;
-        infectChance = 100;
+        infectChance = 200;
         clickChances--;
         for(Node node: nodes) {
           node.hit =false;
@@ -79,10 +85,10 @@ void Infect() {
     
         float dist = dist(radXPos, radYPos, node.nodePos.x, node.nodePos.y);
         
-        if(dist <= infectRadius - 50 && node.hit == false) {
+        if(dist <= infectRadius - 50 && node.hit == false && node.infected == false) {
             
             node.hit = true;
-            node.Infected(infectRadius - 50);
+            node.Infected((infectChance - 50) / 2);
             
         }
     }
