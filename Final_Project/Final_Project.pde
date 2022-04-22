@@ -4,26 +4,38 @@ boolean newWave = false;
 float radXPos, radYPos;
 float radiusX = 100, radiusY =100;
 float infectRadius = 0;
-float infectChance = 250;
-int clickChances = 3;
+float infectChance = 200, globalInfectBonus;
+int clickChances = 3, eventChances = 3;
+boolean  createEvent = false, createVirus = true, eventInProgress = false;
+int nodeCount, infectedCount, immuneCount, deadCount;
+float counter;
+int virusDamage;
 
-int virusDamage = int(random(5, 10));
+PVector eventPos;
+
+float eventTimer;
+
+Slider s1 = new Slider();
+
+boolean sliding = false;
+
 void setup() {
   
   
-  size(1000, 1000);
+  size(1000, 1200);
   
   nodes = new Node[1000];
   
   for(int i = 0; i < nodes.length; i++) {
-  
+    nodeCount++;
     nodes[i] = new Node();
     nodes[i].Initialise();
     nodes[i].Update();
   }
   
-  
-  
+  s1.eXPos = 650;
+  ChangeStats();
+  counter = millis();
 }
 
 void draw() {
@@ -37,11 +49,17 @@ void draw() {
     
   }
   
-  if(mousePressed && clickChances > 0) {
+  if(mousePressed && clickChances > 0 && createVirus && mouseY < 1000) {
     newWave = true;
     radXPos = mouseX;
     radYPos = mouseY;
     
+  }
+  
+  if(mousePressed && createEvent && eventChances > 0 && mouseY < 1000 && eventInProgress == false) {
+      
+      rect(mouseX - 25, mouseY -25, 50,50);
+      Event();
   }
   
   if(newWave) {
@@ -49,6 +67,103 @@ void draw() {
       Infect();
   }
   
+  DrawInfo();
+  
+  if(mousePressed && mouseY > 1000) {
+  
+       float dist = dist(mouseX, mouseY, s1.eXPos, s1.eYPos);
+       
+       if(dist < 50) {
+         sliding = true;
+       }
+  }
+  
+  if(millis() > counter + 1000) {
+      
+    int count = 0;
+    int infCount = 0;
+    int dCount = 0;
+      for(Node node : nodes) {
+      
+          if(node.immune && node.alive == true) {
+            count++;
+          }
+          
+          if(node.alive == false) {
+              dCount++;
+          }
+          
+          if(node.alive && node.infected) {
+              infCount++;
+          }
+      }
+      
+      immuneCount = count;
+      deadCount = dCount;
+      infectedCount = infCount;
+      nodeCount = 1000 - dCount;
+      counter = millis();
+  }
+  
+}
+
+
+void keyPressed() {
+
+  if(key == 'e') {
+  
+      createEvent = true;
+      createVirus = false;
+  }
+  
+  if(key == 'f') {
+  
+      createEvent = false;
+      createVirus = true;
+  }
+
+}
+
+void mouseDragged() {
+
+    if(sliding) {
+        s1.Slide();
+    
+    }
+}
+
+void mouseReleased() {
+
+    if(sliding) {
+        ChangeStats();
+    }
+}
+
+
+void ChangeStats() {
+        sliding = false;
+        globalInfectBonus = (s1.maxValue - s1.eXPos) / 2;
+        println("infectBonus: " + globalInfectBonus);
+        virusDamage = int(((s1.minValue + s1.eXPos) - 1200) / 10);
+        
+        if(virusDamage < 1) {
+          virusDamage = 1;
+        }
+        println("damage: " + virusDamage);
+
+}
+
+void DrawInfo() {
+  
+    fill(255);
+    text("Total Nodes: " + nodeCount, 100, 1050);
+    text("Infected Nodes: " + infectedCount, 100, 1100);
+    text("Dead Nodes: " + deadCount, 300, 1050);
+    text("Immune Nodes: " + immuneCount, 300, 1100);
+    text("Infection rate", 500, 1050);
+    text("Virus damage", 720, 1050);
+    s1.Show();
+    text("Press 'E' to create and event, press 'F' to instatiate the virus. Mouse click to activate.", 500, 1100);
 }
 
 
@@ -88,8 +203,32 @@ void Infect() {
         if(dist <= infectRadius - 50 && node.hit == false && node.infected == false) {
             
             node.hit = true;
-            node.Infected((infectChance - 50) / 2);
-            
+            node.cooldown = millis();
+            node.infectBonus = int(globalInfectBonus);
+            node.Infected(((infectChance - 50) / 2));
+            node.damage = virusDamage;
         }
     }
+}
+
+void Event() {
+  
+    eventInProgress = true;
+    //eventPos = new PVector(int(random(50, width - 50)), int(random(50, height - 200)));
+    eventPos = new PVector(mouseX, mouseY);
+    
+    for(int i = 0; i < nodes.length; i++) {
+        
+      float dist = dist(nodes[i].nodePos.x, nodes[i].nodePos.y, eventPos.x, eventPos.y);
+      
+      if(dist < 400) {
+        nodes[i].coachella = true;
+        nodes[i].eventDist = int(random(10, 50));
+      
+      }
+        
+    }
+    eventChances--;
+    createEvent = false;
+    eventTimer = millis();
 }
