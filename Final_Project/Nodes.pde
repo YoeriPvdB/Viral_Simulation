@@ -1,8 +1,8 @@
 class Node {
 
 
-  float xPos = random(50, 950);
-  float yPos = random(50, 950);
+  float xPos = random(50, width - 50);
+  float yPos = random(50, height - 200);
   PVector nodePos = new PVector(xPos, yPos);
   float ySpeed;
   float xSpeed; 
@@ -80,12 +80,12 @@ class Node {
     ellipse(nodePos.x, nodePos.y, radius, radius);
 
     
-    if (nodePos.x > 950 || nodePos.x < 50) {
+    if (nodePos.x > width-50 || nodePos.x < 50) {
 
       xSpeed *= -1;
     }
 
-    if (nodePos.y > 950 || nodePos.y < 50) {
+    if (nodePos.y > height-200 || nodePos.y < 50) {
 
       ySpeed *= -1;
     }

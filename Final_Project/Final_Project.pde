@@ -22,7 +22,7 @@ boolean sliding = false;
 void setup() {
   
   
-  size(1000, 1200);
+  size(900, 1000);
   
   nodes = new Node[1000];
   
@@ -33,7 +33,7 @@ void setup() {
     nodes[i].Update();
   }
   
-  s1.eXPos = 650;
+  s1.eXPos = 600;
   ChangeStats();
   counter = millis();
 }
@@ -49,14 +49,14 @@ void draw() {
     
   }
   
-  if(mousePressed && clickChances > 0 && createVirus && mouseY < 1000) {
+  if(mousePressed && clickChances > 0 && createVirus && mouseY < height - 200) {
     newWave = true;
     radXPos = mouseX;
     radYPos = mouseY;
     
   }
   
-  if(mousePressed && createEvent && eventChances > 0 && mouseY < 1000 && eventInProgress == false) {
+  if(mousePressed && createEvent && eventChances > 0 && mouseY < height - 200 && eventInProgress == false) {
       
       rect(mouseX - 25, mouseY -25, 50,50);
       Event();
@@ -69,7 +69,7 @@ void draw() {
   
   DrawInfo();
   
-  if(mousePressed && mouseY > 1000) {
+  if(mousePressed && mouseY > height - 200) {
   
        float dist = dist(mouseX, mouseY, s1.eXPos, s1.eYPos);
        
@@ -144,7 +144,7 @@ void ChangeStats() {
         sliding = false;
         globalInfectBonus = (s1.maxValue - s1.eXPos) / 2;
         println("infectBonus: " + globalInfectBonus);
-        virusDamage = int(((s1.minValue + s1.eXPos) - 1200) / 10);
+        virusDamage = int(((s1.minValue + s1.eXPos) - 1100) / 10);
         
         if(virusDamage < 1) {
           virusDamage = 1;
@@ -156,14 +156,14 @@ void ChangeStats() {
 void DrawInfo() {
   
     fill(255);
-    text("Total Nodes: " + nodeCount, 100, 1050);
-    text("Infected Nodes: " + infectedCount, 100, 1100);
-    text("Dead Nodes: " + deadCount, 300, 1050);
-    text("Immune Nodes: " + immuneCount, 300, 1100);
-    text("Infection rate", 500, 1050);
-    text("Virus damage", 720, 1050);
+    text("Total Nodes: " + nodeCount, 50, height - 150);
+    text("Infected Nodes: " + infectedCount, 50, height - 100);
+    text("Dead Nodes: " + deadCount, 250, height - 150);
+    text("Immune Nodes: " + immuneCount, 250, height - 100);
+    text("Infection rate", 450, height - 150);
+    text("Virus damage", 670, height - 150);
     s1.Show();
-    text("Press 'E' to create and event, press 'F' to instatiate the virus. Mouse click to activate.", 500, 1100);
+    text("Press 'E' to create and event, press 'F' to instatiate the virus. Mouse click to activate.", 450, height - 100);
 }
 
 
