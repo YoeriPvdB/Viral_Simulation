@@ -221,7 +221,7 @@ void Event() {
         
       float dist = dist(nodes[i].nodePos.x, nodes[i].nodePos.y, eventPos.x, eventPos.y);
       
-      if(dist < 400) {
+      if(dist < 300) {
         nodes[i].coachella = true;
         nodes[i].eventDist = int(random(10, 50));
       
