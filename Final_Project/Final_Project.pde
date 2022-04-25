@@ -196,6 +196,7 @@ void Radius() {
 
 void Infect() {
 
+      println(infectChance);
     for(Node node : nodes) {
     
         float dist = dist(radXPos, radYPos, node.nodePos.x, node.nodePos.y);
@@ -216,7 +217,7 @@ void Event() {
     eventInProgress = true;
     //eventPos = new PVector(int(random(50, width - 50)), int(random(50, height - 200)));
     eventPos = new PVector(mouseX, mouseY);
-    
+
     for(int i = 0; i < nodes.length; i++) {
         
       float dist = dist(nodes[i].nodePos.x, nodes[i].nodePos.y, eventPos.x, eventPos.y);

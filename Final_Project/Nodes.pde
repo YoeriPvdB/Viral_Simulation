@@ -102,7 +102,7 @@ class Node {
           ySpeed *= -1;
           node.hit = true;
           node.cooldown = millis();
-          node.immune = false;
+          
           node.Infected(infectRate + infectBonus);
           //node.col = color(255, 0, 0);
           node.damage = damage;
@@ -140,10 +140,11 @@ class Node {
        
       if (millis() > currentSickTime + sickTime) {
 
+        immune = true;
         infected = false;
         immunity = int(random(60, 90));
-        infectedCount--;
-        immune = true;
+        //infectedCount--;
+        
         damageTime = 1000;
         
       }
@@ -177,6 +178,7 @@ class Node {
 
     if (roll < infectChance + infectBonus) {
       //infectedCount++;
+      immune = false;
       infected = true;
       currentSickTime = millis();
       
